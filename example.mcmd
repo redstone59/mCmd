@@ -1,0 +1,33 @@
+#def vulnerable @a[tag=!immune,gamemode=!spectator]
+#def trappedFloor {x1 ,y1 ,z1},{x2 ,y2, z2} // Setting the trapped floor
+#def alarm {x, y, z}
+#def macroInAMacro trappedFloor,alarm
+
+void activateAlarm()
+{
+    msg(redstone59_,"intruder!?!?");
+    set(alarm,redstone_block); //gameing alert
+}
+
+if ((vulnerable.distance() <= 5) && !(time.query() within [6000,18000]))
+{
+    fill(trappedFloor,air);
+    activateAlarm(); //this comment has another // inside of it haha!
+    playsound(ender_dragon.kill,~,@p,1,1,1);
+}
+
+macroInAMacro
+
+/*
+
+COMPILES TO
+
+msg redstone59_ intruder!?!?
+setblock x y z redstone_block
+
+execute if @a[tag=!immune,gamemode=!spectator,distance=..5]
+    fill x1 y1 z1 x2 y2 z2 air
+    setblock (whereever the command block tower starts at) redstone_block
+    playsound minecraft.entity.ender_dragon.kill ~ ~ ~ @p 1 1 1
+
+*/
