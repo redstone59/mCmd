@@ -13,23 +13,31 @@ Feature list (maybe):
 
 from arguments import *
 from tokens import *
+from errors import *
 
-import re
+import regex as re
 
 program_file = getattr(arguments,"in").read()
 compiled_file = getattr(arguments,"out")
 
 # Removing the stuff that the compiler doesn't need
 
-program_trimmed = re.sub(r"//.*\n|/\*[\s\S]*\*/","\n",program_file) # Removing comments
+def not_string(expression:str): #makes the regex not apply within a string
+    """
+    please implement me :3
+    """
+    return expression
 
-macros = re.findall(r"#def.*\n",program_trimmed) # Find all macro definitions in the program
-program_trimmed = re.sub(r"#def.*\n","",program_trimmed) # Remove the macro definitions
+program_trimmed = re.sub(not_string(r"//.*\n|/\*[\s\S]*\*/"),"\n",program_file) # Removing comments
+
+macros = re.findall(not_string(r"#def.*\n"),program_trimmed) # Find all macro definitions in the program
+program_trimmed = re.sub(not_string(r"#def.*\n"),"",program_trimmed) # Remove the macro definitions
 for x in macros:
     definition = x.split()[1:] # Split the macro definition into the macro and it's expansion, trimming the #def
     program_trimmed = re.sub(definition[0]," ".join(definition[1:]),program_trimmed) #Replace all instances of the macro with it's expansion
 
-program_trimmed = re.sub(r"\s*\n\s*","",program_trimmed) # Removing new lines and trimming beginning whitespace
+program_trimmed = re.sub(not_string(r"\s*\n\s*"),"",program_trimmed) # Removing new lines and trimming beginning whitespace
+program_trimmed = re.sub(not_string(r"\s*,\s*"),",",program_trimmed) # Trimming whitespace around commas
 
 
 print(program_trimmed)
