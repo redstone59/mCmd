@@ -23,12 +23,13 @@ compiled_file = getattr(arguments,"out")
 # Removing the stuff that the compiler doesn't need
 
 def not_string(expression:str): #makes the regex not apply within a string
-    """
-    please implement me :3
-    """
-    return expression
+    result = []
+    split_expression = expression.split('|')
+    for x in split_expression:
+        result.append(rf"{x}(?<!(?=.*\")\".*)|{x}(?<!(?=.*\')\'.*)")
+    return "|".join(result)
 
-program_trimmed = re.sub(not_string(r"//.*\n|/\*[\s\S]*\*/"),"\n",program_file) # Removing comments
+program_trimmed = re.sub(not_string(r"//.*|/\*[\s\S]*\*/"),"",program_file) # Removing comments
 
 macros = re.findall(not_string(r"#def.*\n"),program_trimmed) # Find all macro definitions in the program
 program_trimmed = re.sub(not_string(r"#def.*\n"),"",program_trimmed) # Remove the macro definitions
