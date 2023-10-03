@@ -29,7 +29,7 @@ def not_string(expression:str): #makes the regex not apply within a string
         result.append(rf"{x}(?<!(?=.*\")\".*)|{x}(?<!(?=.*\')\'.*)")
     return "|".join(result)
 
-program_trimmed = re.sub(not_string(r"//.*|/\*[\s\S]*\*/"),"",program_file) # Removing comments
+program_trimmed = re.sub(not_string(r"//.*/S|/\*[^\"]*\*/"),"",program_file) # Removing comments
 
 macros = re.findall(not_string(r"#def.*\n"),program_trimmed) # Find all macro definitions in the program
 program_trimmed = re.sub(not_string(r"#def.*\n"),"",program_trimmed) # Remove the macro definitions
