@@ -16,7 +16,19 @@ class Assignment(Token): # assign value or scoreboard value to another scoreboar
         self.scoreboard = scoreboard
         self.value = value
 
+class Operator(Token): # see tokens_old.py for a lil bit of a list if you will (could implement into Expression but i think expression is value operator value)
+    pass
+
 class Expression(Token):
+    pass
+
+class Constant(Token): # might not need but just in case you know
+    pass
+
+class NBTData(Token):
+    pass
+
+class Verbatim(Token): # surrounded by (double?) angle brackets, placed verbatim into a command block <<summon lightning_bolt ~ ~5 ~>>
     pass
 
 class ScoreboardValue(Token):
