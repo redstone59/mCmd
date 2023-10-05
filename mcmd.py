@@ -41,7 +41,7 @@ def substitute_unless(pattern:str, unless:str, replacement:str, string:str):
 def sub_not_string(pattern:str, replacement:str, string:str):
     return substitute_unless(pattern,r"\".*?\"|\'.*?\'",replacement,string)
 
-program_trimmed = sub_not_string(r"//.*|/\*[\s\S]*\*/","",program_file) # Removing comments
+program_trimmed = sub_not_string(r"//.*|/\*[\s\S]*?\*/","",program_file) # Removing comments
 
 macros = re.findall(r"#def.*\n",program_trimmed) # Find all macro definitions in the program
 program_trimmed = sub_not_string(r"#def.*\n","",program_trimmed) # Remove the macro definitions
