@@ -13,32 +13,40 @@ Feature list (maybe):
 
 from arguments import *
 from tokens import *
-from errors import *
+from cmdparser import *
 
 import regex as re
 
 program_file = getattr(arguments,"in").read()
 compiled_file = getattr(arguments,"out")
 
-# Removing the stuff that the compiler doesn't need
+# Removing the stuff that the compiler doesn't need, preprocessing
 
-def not_string(expression:str): #makes the regex not apply within a string
-    result = []
-    split_expression = expression.split('|')
-    for x in split_expression:
-        result.append(rf"{x}(?<!(?=.*\")\".*)|{x}(?<!(?=.*\')\'.*)")
-    return "|".join(result)
+def check_character_position(check:int, positions):
+    for x in positions:
+        if x[0] <= check <= x[1]: return False
+    return True
 
-program_trimmed = re.sub(not_string(r"//.*/S|/\*[^\"]*\*/"),"",program_file) # Removing comments
+def substitute_unless(pattern:str, unless:str, replacement:str, string:str):
+    quotes = re.findall(unless, string)
+    string = re.sub(unless, "%s", string)
+    string = re.sub(pattern, replacement, string)
+    string %= tuple(quotes)
+    return string
 
-macros = re.findall(not_string(r"#def.*\n"),program_trimmed) # Find all macro definitions in the program
-program_trimmed = re.sub(not_string(r"#def.*\n"),"",program_trimmed) # Remove the macro definitions
+def sub_not_string(pattern:str, replacement:str, string:str):
+    return substitute_unless(pattern,r"\".*?\"|\'.*?\'",replacement,string)
+
+program_trimmed = sub_not_string(r"//.*|/\*[\s\S]*\*/","",program_file) # Removing comments
+
+macros = re.findall(r"#def.*\n",program_trimmed) # Find all macro definitions in the program
+program_trimmed = sub_not_string(r"#def.*\n","",program_trimmed) # Remove the macro definitions
 for x in macros:
     definition = x.split()[1:] # Split the macro definition into the macro and it's expansion, trimming the #def
-    program_trimmed = re.sub(definition[0]," ".join(definition[1:]),program_trimmed) #Replace all instances of the macro with it's expansion
+    program_trimmed = sub_not_string(definition[0]," ".join(definition[1:]),program_trimmed) #Replace all instances of the macro with it's expansion
 
-program_trimmed = re.sub(not_string(r"\s*\n\s*"),"",program_trimmed) # Removing new lines and trimming beginning whitespace
-program_trimmed = re.sub(not_string(r"\s*,\s*"),",",program_trimmed) # Trimming whitespace around commas
+program_trimmed = sub_not_string(r"\s*\n\s*","",program_trimmed) # Removing new lines and trimming beginning whitespace
+program_trimmed = sub_not_string(r"\s*,\s*",",",program_trimmed) # Trimming whitespace around commas
 
 
 print(program_trimmed)
