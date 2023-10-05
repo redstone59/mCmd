@@ -1,5 +1,6 @@
-?* 
+/* 
  * Doesn't actually compile into anything. This was mainly to test preprocessing.
+ * There will be actual compilable programs in here when I get the language into a usable state.
  */
 
 #def vulnerable @a[tag=!immune,gamemode=!spectator]
@@ -21,15 +22,14 @@ if ((vulnerable.distance() <= 5) && !(time.query() within [6000,18000]))
 }
 
 /*
-
-COMPILES TO
-
-msg redstone59_ intruder!?!?
-setblock x y z redstone_block
-
-execute if @a[tag=!immune,gamemode=!spectator,distance=..5]
-    fill x1 y1 z1 x2 y2 z2 air
-    setblock (whereever the command block tower starts at) redstone_block
-    playsound minecraft.entity.ender_dragon.kill ~ ~ ~ @p 1 1 1
-
-*/
+ * COMPILES TO
+ * 
+ * msg redstone59_ intruder!?!?
+ * setblock x y z redstone_block
+ * 
+ * execute if @a[tag=!immune,gamemode=!spectator,distance=..5]
+ *     fill x1 y1 z1 x2 y2 z2 air
+ *     setblock (whereever the command block tower starts at) redstone_block
+ *     playsound minecraft.entity.ender_dragon.kill ~ ~ ~ @p 1 1 1
+ * 
+ */
