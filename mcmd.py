@@ -12,10 +12,9 @@ Feature list (maybe):
 """
 
 from arguments import *
-from tokens import *
+from program_parser import *
 
 import regex as re
-import parsimonious
 import time
 
 START_TIME = time.time()
@@ -45,7 +44,7 @@ program_trimmed = sub_not_string(r"//.*|/\*[\s\S]*?\*/","",program_file) # Remov
 
 macros = re.findall(r"#def.*\n",program_trimmed) # Find all macro definitions in the program
 program_trimmed = sub_not_string(r"#def.*\n","",program_trimmed) # Remove the macro definitions
-for i in range (10): # Allow for macro in macro up to 10 macros deep (this is so a bodge of something)
+for i in range (getattr(arguments,"macro_depth")): # Allow for macro nesting specified in the initial command
     for x in macros:
         definition = x.split()[1:] # Split the macro definition into the macro and it's expansion, trimming the #def
         program_trimmed = sub_not_string(definition[0]," ".join(definition[1:]),program_trimmed) #Replace all instances of the macro with it's expansion
